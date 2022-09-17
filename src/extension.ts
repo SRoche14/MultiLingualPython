@@ -6,8 +6,10 @@
 // import { arrayBuffer, text } from 'stream/consumers';
 import { privateEncrypt } from 'crypto';
 import * as vscode from 'vscode';
+import * as fs from 'fs';
 // import translate from 'translate';
 const translate = require('translate-google');
+let path = require('path');
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -49,7 +51,7 @@ function largeStuff() {
 			"False": "Falso",
 			"None": "Nada",
 			"True": "Verdadero",
-			"and": "&", 
+			"and": "y", 
 			"as": "como",
 			"assert": "afirmar",
 			"async": "async",
@@ -73,15 +75,240 @@ function largeStuff() {
 			"lambda": "lambda",
 			"nonlocal": "~local",
 			"not": "~", 
-			"or": "|", 
+			"or": "o", 
 			"pass": "pasar",
 			"raise": "plantear",
 			"return": "devolver",
 			"try": "intentar", 
 			"while": "mientras",
 			"with": "con", 
-			"yield": "ceder"
-
+			"yield": "ceder",
+			"self": "mismo",
+			"List": "Lista",
+			"NotImplemented": "No_se_ha_implementado",
+			"Any": "Cualquiara",
+			"any": "cualquiara",
+			"Callable": "Llamable",
+			"Union": "Unión",
+			"Set": "Conjunto",
+			"Sequence": "Secuencia",
+			"Dict": "Dicc",
+			"object": "objeto",
+			"Tuple": "Tupla",
+			"ArithmeticError": "AritméticaError",
+			"AssertionError": "AfirmaciónError",
+			"AttributeError": "AtributoError",
+			"BufferError": "BúferError",
+			"BlockingIOError": "BloqueandoIOError",
+			"BrokenPipeError": "TuberíaRotaError",
+			"ChildProcessError": "ProcessoInfantilError",
+			"ConnectionAbortedError": "ConexiónAbortadaError",
+			"ConnectionRefusedError": "ConexiónRechazadaError",
+			"ConnectionResetError": "ConexiónReiniciada",
+			"EnvironmentError": "MedioAmbienteError",
+			"FileExistsError": "ArchivoExisteError",
+			"FileNotFoundError": "ArchivoNoEncontradoError",
+			"FloatingPointError": "FlotatingPointError",
+			"ImportError": "ImportaciónError",
+			"IndentationError": "MuescaError",
+			"IndexError": "ÍndiceError",
+			"InterruptedError": "InterrumpidoError",
+			"IsADirectoryError": "EsADirectorioError",
+			"NotADirectoryError": "NoADirectorioError",
+			"PermissionError": "PermisoError",
+			"ProcessLookupError": "ProcesoBùsquedaError",
+			"TimeoutError": "SeAcabóElTiempoError",
+			"KeyError": "ClaveError",
+			"LookupError": "BúsquedaError",
+			"MemoryError": "MemoriaError",
+			"NameError": "NombreError",
+			"NotImplementedError": "NoSeHaImplementadoError",
+			"OverflowError": "DesbordamientoError",
+			"ReferenceError": "ReferenciaError",
+			"RuntimeError": "TiempoDeEjecuciónError",
+			"RecursionError": "RecursiónError",
+			"SyntaxError": "SintaxisError",
+			"SystemError": "SistemaError",
+			"TabError": "PestañaError",
+			"TypeError": "TipoError",
+			"UnboundLocalError": "SueltoLocalError",
+			"UnicodeEncodeError": "UnicodeCodificarError",
+			"UnicodeDecodeError": "UnicodeDescodificarError",
+			"UnicodeTranslateError": "UnicodeTraducirError",
+			"ValueError": "ValorError",
+			"WindowsError": "VentanasError",
+			"ZeroDivisionError": "CeroDivisiónError",
+			"ModuleNotFoundError": "MóduloNoEncontradoError",
+			"PendingDeprecationWarning": "PendienteDeprecationAviso",
+			"RuntimeWarning": "TiempoDeEjecuciónAviso",
+			"SyntaxWarning": "SintaxisAviso",
+			"UserWarning": "UsarioAviso",
+			"FutureWarning": "FuturoAviso",
+			"ImportWarning": "ImportarAviso",
+			"UnicodeWarning": "UnicodeAviso",
+			"ResourceWarning": "RecursoAviso",
+			"SystemExit": "SistemaSalida",
+			"StopAsyncIteration": "ParaAsyncIteración",
+			"StopIteration": "ParaIteración",
+			"KeyboardInterrupt": "TecladoInterruptado",
+			"GeneratorExit": "GeneradorSalida",
+			"BaseException": "BaseExcepción",
+			"Exception": "Excepción",
+			"all": "todo",
+			"bin": "contenedor",
+			"breakpoint": "punto_de_ruptura",
+			"callable": "llamable",
+			"compile": "compilar",
+			"credits": "créditos",
+			"delattr": "borraratri",
+			"enumarate": "enumarar",
+			"exec": "ejec",
+			"exit": "salir",
+			"filter": "filtro",
+			"format": "formato",
+			"getattr": "obteneratri",
+			"hasattr": "teneratri",
+			"help": "ayudar",
+			"input": "entrada",
+			"isinstance": "escaso",
+			"issubclass": "essubclase",
+			"len": "lar",
+			"license": "licencia",
+			"locals": "locales",
+			"map": "mapa",
+			"memoryview": "memoriavista",
+			"next": "siguiente",
+			"open": "abrir",
+			"pow": "pot",
+			"print": "imprimir",
+			"quit": "dejar",
+			"range": "rango",
+			"reload": "recargar",
+			"reversed": "invertido",
+			"round": "redondear",
+			"setattr": "poneratri",
+			"sorted": "ordenado",
+			"sum": "suma",
+			"zip": "comprimir",
+			"file": "archivo",
+			"reduce": "reducir",
+			"intern": "pasante",
+			"raw_input": "entrada_sin_procesar",
+			"basestring": "baseguirnalda",
+			"string": "guirnalda",
+			"execfile": "ejecarchivo",
+			"long": "largo",
+			"xrange": "xrango",
+			"bytearray": "matrizdebytes",
+			"classmethod": "métododeclase",
+			"complex": "complejo",
+			"dict": "dicc",
+			"float": "flotador",
+			"frozenset": "conjuntocongelado",
+			"int": "núm",
+			"list": "lista",
+			"property": "propiedad",
+			"set": "conjunto",
+			"slice": "rebanar",
+			"staticmethod": "métodoestático",
+			"str": "guir",
+			"tuple": "tupla",
+			"type": "tipo",
+			"super": "súper",
+			"add": "añadir",
+			"aenter": "aentrar",
+			"aexit": "asalir",
+			"call": "llamar",
+			"ceil": "techo",
+			"coerce": "coaccionar",
+			"contains": "contener",
+			"copy": "copia",
+			"deepcopy": "copiaprofunda",
+			"delitem": "borrarartículo",
+			"delslice": "borrarparte",
+			"enter": "entrar",
+			"floor": "piso",
+			"floordiv": "pisodiv",
+			"get": "obtener",
+			"getattribute": "obteneratributo",
+			"getinitargs": "obtenerparámetrosiniciales",
+			"getitem": "obtenerartículo",
+			"getnewargs": "obtenerparámetrosnuevos",
+			"getslice": "obtenerparte",
+			"getstate": "obtenerestado",
+			"iadd": "iañadir",
+			"iand": "iy",
+			"ifloordiv": "ipisodiv",
+			"ilshift": "iizqmover",
+			"index": "índice",
+			"init": "inicializar",
+			"instancecheck": "casochequeo",
+			"invert": "invertir",
+			"ipow": "ipot",
+			"irshift": "idmover",
+			"itruediv": "idivverdadero",
+			"lshift": "izqmover",
+			"missing": "perdido",
+			"new": "neuvo",
+			"rdiv": "ddiv",
+			"rdivmod": "divmod",
+			"nonzero": "nocero",
+			"rand": "azar",
+			"reduce_ex": "reducir_ex",
+			"rfloordiv": "dpisodiv",
+			"rlshift": "dizqmover",
+			"rpow": "dpot",
+			"rrshift": "ddmover",
+			"rshift": "dmover",
+			"rsub": "dsub",
+			"rtruediv": "ddivverdadero",
+			"rxor": "dxor",
+			"rmatmul": "dmatmul",
+			"setitem": "ponerartículo",
+			"setslice": "ponerparte",
+			"setstate": "ponerestado",
+			"sizeof": "tamañode",
+			"rmod": "dmod",
+			"rmul": "dmul",
+			"ror": "dor",
+			"subclasscheck": "subclasechequeo",
+			"truediv": "divverdadero",
+			"init_subclass": "subclase_initializar",
+			"set_name": "poner_nombre",
+			"fspath": "fscamino",
+			"prepare": "preparar",
+			"builtins": "incorporados",
+			"class_getitem": "clase_obtenerartículo",
+			"code": "código",
+			"debug": "depurar",
+			"defaults": "los_valores_por_defecto",
+			"kwdefaults": "kw_los_valores_por_defecto",
+			"members": "miembros",
+			"metaclass": "metaclase",
+			"methods": "métodos",
+			"module": "módulo",
+			"mro_entries": "mro_entradas",
+			"name": "nombre",
+			"post_init": "post_inicial",
+			"signature": "firma",
+			"slots": "ranuras",
+			"subclasses": "subclases",
+			"version": "versión",
+			"weakref": "débilref",
+			"wrapped": "envuelto",
+			"annotations": "anotaciones",
+			"classcell": "clasecelda",
+			"spec": "espec",
+			"path": "camino",
+			"package": "paquete",
+			"future": "futuro",
+			"traceback": "localizaratrás",
+			"NOTE": "NOTAR",
+			"HACK": "HACKEAR",
+			"FIXME": "ARRELGARME",
+			"BUG": "BICHO",
+			"TODO": "HACER",
+			"__main__": "__principal__",
 		};
 		// variable regex
 		let varReg1  = new RegExp(/([a-zA-Z_]+)=(?!(\w+'|'))/, "gm");
@@ -124,6 +351,9 @@ function largeStuff() {
 		let functionNamesArray = Array.from(functionNames);
 		let functionNamesArr: string[] = [];
 		for(let x = 0; x < functionNamesArray.length; x++) {
+			if(functionNamesArray[x].includes('str')) {
+				continue;
+			}
 			functionNamesArr.push(functionNamesArray[x].slice(0, functionNamesArray[x].length - 1));
 		}
 		functionNamesArr = variableParse(functionNamesArr, []);
@@ -321,11 +551,43 @@ function largeStuff() {
 			
 		}).then(() => {
 			console.log(documentText);
+			
+			create(documentText);
 		});
-		
+	
 		
 	}
 }
+
+function create(inputText: string) {
+	try {
+	  // create the directory
+	  let currentlyOpenTabfilePath = vscode.window.activeTextEditor?.document.uri.path;
+	  let expand = currentlyOpenTabfilePath?.split("/");
+	  const filename = "esp_" + expand?.pop();
+	
+		if(expand && expand.length > 0) {
+			// fs.mkdirSync(expand?.join("/"));
+
+			let absoluteDuckPath = expand.join("/");
+	  
+			const fullpath = path.join(absoluteDuckPath, filename);
+		
+			fs.writeFileSync(fullpath, inputText, 'utf8');
+			var openPath = vscode.Uri.parse("file://" + fullpath); //A request file path
+			vscode.workspace.openTextDocument(openPath).then(doc => {
+			vscode.window.showTextDocument(doc);
+			});
+		}
+	  
+	} 
+	catch (err) {
+	  // log?
+	  console.log('Error creating files');
+  
+	  throw err;
+	}
+  }
 
 function escapeRegExp(string: string) {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
